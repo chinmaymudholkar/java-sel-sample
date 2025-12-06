@@ -167,18 +167,6 @@ target/surefire-reports/index.html
 
 Open this file in a browser to view detailed test execution results.
 
-## Troubleshooting
-
-### Chrome Driver Issues
-If you encounter ChromeDriver issues, WebDriverManager should automatically download the correct version. Ensure you have the latest Chrome browser installed.
-
-### Tests Failing
-- Verify internet connection (tests access https://www.saucedemo.com/)
-- Check if Chromium/Chrome browser is installed
-- Ensure Java 21+ is installed: `java -version`
-- Ensure Maven is installed: `mvn -version`
-- Clear Selenium cache if driver issues persist: `rm -rf ~/.cache/selenium`
-
 ## Author
 
 Created as a demonstration of Selenium WebDriver with TestNG using Page Object Model pattern by Chinmay Mudholkar.  Feel free to clone and use as per your requirements.
