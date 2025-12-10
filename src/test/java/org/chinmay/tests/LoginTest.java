@@ -1,6 +1,7 @@
 package org.chinmay.tests;
 
 import org.chinmay.pages.LoginPage;
+import io.github.cdimascio.dotenv.Dotenv;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -15,6 +16,7 @@ public class LoginTest {
 
         private WebDriver driver;
         private LoginPage loginPage;
+        private Dotenv dotenv;
 
         @BeforeMethod
         public void setUp() {
@@ -39,6 +41,9 @@ public class LoginTest {
                 // Initialize Page Object
                 loginPage = new LoginPage(driver);
 
+                // Initialize Dotenv
+                dotenv = Dotenv.load();
+
                 // Navigate to login page
                 loginPage.navigateToLoginPage();
         }
@@ -56,9 +61,9 @@ public class LoginTest {
         @DataProvider(name = "validCredentials")
         public Object[][] getValidCredentials() {
                 return new Object[][] {
-                                { "standard_user", "secret_sauce" },
-                                { "problem_user", "secret_sauce" },
-                                { "performance_glitch_user", "secret_sauce" }
+                                { dotenv.get("STANDARD_USER"), dotenv.get("PASSWORD") },
+                                { dotenv.get("PROBLEM_USER"), dotenv.get("PASSWORD") },
+                                { dotenv.get("PERFORMANCE_GLITCH_USER"), dotenv.get("PASSWORD") }
                 };
         }
 
@@ -84,7 +89,7 @@ public class LoginTest {
         @DataProvider(name = "lockedOutUser")
         public Object[][] getLockedOutUser() {
                 return new Object[][] {
-                                { "locked_out_user", "secret_sauce",
+                                { dotenv.get("LOCKED_OUT_USER"), dotenv.get("PASSWORD"),
                                                 "Epic sadface: Sorry, this user has been locked out." }
                 };
         }
@@ -93,7 +98,7 @@ public class LoginTest {
 
         @Test(priority = 1, groups = { "positive", "smoke" }, description = "Verify login with standard user")
         public void testLoginWithStandardUser() {
-                loginPage.login("standard_user", "secret_sauce");
+                loginPage.login(dotenv.get("STANDARD_USER"), dotenv.get("PASSWORD"));
 
                 Assert.assertTrue(loginPage.isLoginSuccessful(),
                                 "Login should be successful with valid credentials");

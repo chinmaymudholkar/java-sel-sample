@@ -11,11 +11,29 @@ This project demonstrates automated testing of the [Swag Labs](https://www.sauce
 - TestNG framework for test organization and execution
 - WebDriverManager for automatic browser driver management
 
-## Prerequisites
+### Configuration
 
-- **Java JDK**: Version 21 or higher
-- **Maven**: Version 3.6 or higher
-- **Chrome/Chromium Browser**: Version 142 or compatible
+Create a `.env` file in the root directory (copy from `.env.example`) and add your Swag Labs credentials:
+
+```bash
+cp .env.example .env
+```
+
+The `.env` file should contain:
+
+```properties
+STANDARD_USER=standard_user
+PROBLEM_USER=problem_user
+PERFORMANCE_GLITCH_USER=performance_glitch_user
+LOCKED_OUT_USER=locked_out_user
+PASSWORD=secret_sauce
+```
+
+### Prerequisites
+
+1. Java JDK 21
+2. Maven 3.11+
+3. Chrome Browser
 - **Git**: For cloning the repository
 
 ## Project Structure
