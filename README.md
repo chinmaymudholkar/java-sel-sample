@@ -1,13 +1,13 @@
 # Swag Labs Selenium TestNG Project
 
-A Maven-based test automation project using Selenium WebDriver and TestNG to test the Swag Labs login functionality with both positive and negative scenarios, following the Page Object Model (POM) design pattern.
+A Maven-based test automation project using Selenium WebDriver and TestNG to test the Swag Labs login functionality with both positive and negative scenarios.
 
 ## Project Overview
 
 This project demonstrates automated testing of the [Swag Labs](https://www.saucedemo.com/) login page with comprehensive test coverage including:
 - Positive test scenarios (valid login attempts)
 - Negative test scenarios (invalid credentials, empty fields, locked users)
-- Page Object Model design pattern for maintainable test code
+- Page Factory design pattern for maintainable test code
 - TestNG framework for test organization and execution
 - WebDriverManager for automatic browser driver management
 
@@ -120,15 +120,15 @@ The following credentials are valid for Swag Labs:
 | problem_user | secret_sauce |
 | performance_glitch_user | secret_sauce |
 
-## Page Object Model (POM) Pattern
+## Page Factory Pattern
 
-This project follows the Page Object Model design pattern:
+This project follows the Page Factory design pattern:
 
 - **BasePage.java**: Contains common methods used across all pages (wait utilities, click, type, etc.)
 - **LoginPage.java**: Encapsulates login page elements and actions
 - **LoginTest.java**: Contains test methods that use the page objects
 
-### Benefits of POM:
+### Benefits of Page Factory:
 - Better code organization and maintainability
 - Reduced code duplication
 - Easy to update when UI changes
@@ -169,4 +169,4 @@ Open this file in a browser to view detailed test execution results.
 
 ## Author
 
-Created as a demonstration of Selenium WebDriver with TestNG using Page Object Model pattern by Chinmay Mudholkar.  Feel free to clone and use as per your requirements.
+Created as a demonstration of Selenium WebDriver with TestNG using Page Factory pattern by Chinmay Mudholkar.  Feel free to clone and use as per your requirements.
