@@ -14,9 +14,9 @@ import org.testng.annotations.*;
  */
 public class LoginTest {
 
-        private WebDriver driver;
-        private LoginPage loginPage;
-        private Dotenv dotenv;
+        private ThreadLocal<WebDriver> driver = new ThreadLocal<>();
+        private ThreadLocal<LoginPage> loginPage = new ThreadLocal<>();
+        private Dotenv dotenv = Dotenv.load();
 
         @BeforeMethod
         public void setUp() {
@@ -36,22 +36,20 @@ public class LoginTest {
                 options.addArguments("--remote-allow-origins=*");
 
                 // Initialize WebDriver
-                driver = new ChromeDriver(options);
+                driver.set(new ChromeDriver(options));
 
                 // Initialize Page Object
-                loginPage = new LoginPage(driver);
-
-                // Initialize Dotenv
-                dotenv = Dotenv.load();
+                loginPage.set(new LoginPage(driver.get()));
 
                 // Navigate to login page
-                loginPage.navigateToLoginPage();
+                loginPage.get().navigateToLoginPage();
         }
 
         @AfterMethod
         public void tearDown() {
-                if (driver != null) {
-                        driver.quit();
+                if (driver.get() != null) {
+                        driver.get().quit();
+                        driver.remove();
                 }
         }
 
@@ -96,104 +94,104 @@ public class LoginTest {
 
         // ==================== POSITIVE TEST CASES ====================
 
-        @Test(priority = 1, groups = { "positive", "smoke" }, description = "Verify login with standard user")
+        @Test(priority = 10, groups = { "positive", "smoke" }, description = "Verify login with standard user")
         public void testLoginWithStandardUser() {
-                loginPage.login(dotenv.get("STANDARD_USER"), dotenv.get("PASSWORD"));
+                loginPage.get().login(dotenv.get("STANDARD_USER"), dotenv.get("PASSWORD"));
 
-                Assert.assertTrue(loginPage.isLoginSuccessful(),
+                Assert.assertTrue(loginPage.get().isLoginSuccessful(),
                                 "Login should be successful with valid credentials");
-                Assert.assertTrue(loginPage.getCurrentUrl().contains("inventory.html"),
+                Assert.assertTrue(loginPage.get().getCurrentUrl().contains("inventory.html"),
                                 "Should be redirected to inventory page");
         }
 
-        @Test(priority = 2, groups = {
+        @Test(priority = 20, groups = {
                         "positive" }, dataProvider = "validCredentials", description = "Verify login with multiple valid users")
         public void testLoginWithValidUsers(String username, String password) {
-                loginPage.login(username, password);
+                loginPage.get().login(username, password);
 
-                Assert.assertTrue(loginPage.isLoginSuccessful(),
+                Assert.assertTrue(loginPage.get().isLoginSuccessful(),
                                 "Login should be successful for user: " + username);
         }
 
         // ==================== NEGATIVE TEST CASES ====================
 
-        @Test(priority = 3, groups = {
+        @Test(priority = 30, groups = {
                         "negative" }, dataProvider = "invalidCredentials", description = "Verify login fails with invalid credentials")
         public void testLoginWithInvalidCredentials(String username, String password, String expectedError) {
-                loginPage.login(username, password);
+                loginPage.get().login(username, password);
 
-                Assert.assertTrue(loginPage.isErrorMessageDisplayed(),
+                Assert.assertTrue(loginPage.get().isErrorMessageDisplayed(),
                                 "Error message should be displayed for invalid credentials");
-                Assert.assertTrue(loginPage.getErrorMessage().contains(expectedError),
+                Assert.assertTrue(loginPage.get().getErrorMessage().contains(expectedError),
                                 "Expected error message: " + expectedError);
-                Assert.assertFalse(loginPage.isLoginSuccessful(),
+                Assert.assertFalse(loginPage.get().isLoginSuccessful(),
                                 "Login should not be successful with invalid credentials");
         }
 
-        @Test(priority = 4, groups = {
+        @Test(priority = 40, groups = {
                         "negative" }, dataProvider = "lockedOutUser", description = "Verify locked out user cannot login")
         public void testLoginWithLockedOutUser(String username, String password, String expectedError) {
-                loginPage.login(username, password);
+                loginPage.get().login(username, password);
 
-                Assert.assertTrue(loginPage.isErrorMessageDisplayed(),
+                Assert.assertTrue(loginPage.get().isErrorMessageDisplayed(),
                                 "Error message should be displayed for locked out user");
-                Assert.assertTrue(loginPage.getErrorMessage().contains(expectedError),
+                Assert.assertTrue(loginPage.get().getErrorMessage().contains(expectedError),
                                 "Expected error message: " + expectedError);
-                Assert.assertFalse(loginPage.isLoginSuccessful(),
+                Assert.assertFalse(loginPage.get().isLoginSuccessful(),
                                 "Locked out user should not be able to login");
         }
 
-        @Test(priority = 5, groups = { "negative" }, description = "Verify login with empty username")
+        @Test(priority = 50, groups = { "negative" }, description = "Verify login with empty username")
         public void testLoginWithEmptyUsername() {
-                loginPage.enterUsername("");
-                loginPage.enterPassword("secret_sauce");
-                loginPage.clickLoginButton();
+                loginPage.get().enterUsername("");
+                loginPage.get().enterPassword("secret_sauce");
+                loginPage.get().clickLoginButton();
 
-                Assert.assertTrue(loginPage.isErrorMessageDisplayed(),
+                Assert.assertTrue(loginPage.get().isErrorMessageDisplayed(),
                                 "Error message should be displayed when username is empty");
-                Assert.assertTrue(loginPage.getErrorMessage().contains("Username is required"),
+                Assert.assertTrue(loginPage.get().getErrorMessage().contains("Username is required"),
                                 "Should show username required error");
         }
 
-        @Test(priority = 6, groups = { "negative" }, description = "Verify login with empty password")
+        @Test(priority = 60, groups = { "negative" }, description = "Verify login with empty password")
         public void testLoginWithEmptyPassword() {
-                loginPage.enterUsername("standard_user");
-                loginPage.enterPassword("");
-                loginPage.clickLoginButton();
+                loginPage.get().enterUsername("standard_user");
+                loginPage.get().enterPassword("");
+                loginPage.get().clickLoginButton();
 
-                Assert.assertTrue(loginPage.isErrorMessageDisplayed(),
+                Assert.assertTrue(loginPage.get().isErrorMessageDisplayed(),
                                 "Error message should be displayed when password is empty");
-                Assert.assertTrue(loginPage.getErrorMessage().contains("Password is required"),
+                Assert.assertTrue(loginPage.get().getErrorMessage().contains("Password is required"),
                                 "Should show password required error");
         }
 
-        @Test(priority = 7, groups = { "negative" }, description = "Verify login with both fields empty")
+        @Test(priority = 70, groups = { "negative" }, description = "Verify login with both fields empty")
         public void testLoginWithEmptyFields() {
-                loginPage.clickLoginButton();
+                loginPage.get().clickLoginButton();
 
-                Assert.assertTrue(loginPage.isErrorMessageDisplayed(),
+                Assert.assertTrue(loginPage.get().isErrorMessageDisplayed(),
                                 "Error message should be displayed when both fields are empty");
-                Assert.assertTrue(loginPage.getErrorMessage().contains("Username is required"),
+                Assert.assertTrue(loginPage.get().getErrorMessage().contains("Username is required"),
                                 "Should show username required error");
         }
 
-        @Test(priority = 8, groups = { "negative" }, description = "Verify login with invalid username")
+        @Test(priority = 80, groups = { "negative" }, description = "Verify login with invalid username")
         public void testLoginWithInvalidUsername() {
-                loginPage.login("invalid_user_123", "secret_sauce");
+                loginPage.get().login("invalid_user_123", "secret_sauce");
 
-                Assert.assertTrue(loginPage.isErrorMessageDisplayed(),
+                Assert.assertTrue(loginPage.get().isErrorMessageDisplayed(),
                                 "Error message should be displayed for invalid username");
-                Assert.assertTrue(loginPage.getErrorMessage().contains("Username and password do not match"),
+                Assert.assertTrue(loginPage.get().getErrorMessage().contains("Username and password do not match"),
                                 "Should show credentials mismatch error");
         }
 
-        @Test(priority = 9, groups = { "negative" }, description = "Verify login with invalid password")
+        @Test(priority = 90, groups = { "negative" }, description = "Verify login with invalid password")
         public void testLoginWithInvalidPassword() {
-                loginPage.login("standard_user", "wrong_password_123");
+                loginPage.get().login("standard_user", "wrong_password_123");
 
-                Assert.assertTrue(loginPage.isErrorMessageDisplayed(),
+                Assert.assertTrue(loginPage.get().isErrorMessageDisplayed(),
                                 "Error message should be displayed for invalid password");
-                Assert.assertTrue(loginPage.getErrorMessage().contains("Username and password do not match"),
+                Assert.assertTrue(loginPage.get().getErrorMessage().contains("Username and password do not match"),
                                 "Should show credentials mismatch error");
         }
 }
