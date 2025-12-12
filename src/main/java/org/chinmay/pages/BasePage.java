@@ -40,33 +40,47 @@ public class BasePage {
     /**
      * Click on element
      */
-    @Step("Click on element: {0}")
-    protected void click(WebElement element) {
-        waitForElementToBeClickable(element);
+    /**
+     * Get element name using reflection
+     */
+    private String getElementName(WebElement element) {
         try {
-            String text = element.getText();
-            // If text is empty, try to get value or just log "element"
-            if (text.isEmpty()) {
-                text = element.getAttribute("value");
+            for (java.lang.reflect.Field field : this.getClass().getDeclaredFields()) {
+                field.setAccessible(true);
+                Object fieldValue = field.get(this);
+                if (fieldValue == element) {
+                    return field.getName();
+                }
             }
-            if (text == null || text.isEmpty()) {
-                text = "element";
-            }
-            logger.info("Clicking on: " + text);
         } catch (Exception e) {
-            logger.info("Clicking on element");
+            // Ignore reflection errors
         }
+        return "element";
+    }
+
+    /**
+     * Click on element
+     */
+    @Step("Click on element")
+    protected void click(WebElement element) {
+        String elementName = getElementName(element);
+        io.qameta.allure.Allure.getLifecycle().updateStep(step -> step.setName("Click on element: " + elementName));
+        waitForElementToBeClickable(element);
+        logger.info("Clicking: " + elementName);
         element.click();
     }
 
     /**
      * Type text into element
      */
-    @Step("Type '{1}' into element: {0}")
+    @Step("Type '{1}' into element")
     protected void type(WebElement element, String text) {
+        String elementName = getElementName(element);
+        io.qameta.allure.Allure.getLifecycle()
+                .updateStep(step -> step.setName("Type '" + text + "' into element: " + elementName));
         waitForElementToBeClickable(element);
         element.clear();
-        logger.info("Typing: '" + text + "' into element");
+        logger.info("Typing: '" + text + "' into " + elementName);
         element.sendKeys(text);
     }
 
@@ -82,11 +96,7 @@ public class BasePage {
      * Check if element is displayed
      */
     protected boolean isDisplayed(WebElement element) {
-        try {
-            return element.isDisplayed();
-        } catch (Exception e) {
-            return false;
-        }
+        return element.isDisplayed();
     }
 
     /**
