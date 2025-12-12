@@ -20,11 +20,13 @@ import io.qameta.allure.*;
 @Feature("Login")
 public class LoginTest {
 
+        // ==================== FIELDS ====================
         private ThreadLocal<WebDriver> driver = new ThreadLocal<>();
         private ThreadLocal<LoginPage> loginPage = new ThreadLocal<>();
         private Dotenv dotenv = Dotenv.load();
         private static final Logger logger = LogManager.getLogger(LoginTest.class);
 
+        // ==================== SETUP / TEARDOWN ====================
         @BeforeMethod
         public void setUp(Method method) {
                 logger.info("Starting test: " + method.getName());
@@ -62,13 +64,12 @@ public class LoginTest {
                 }
         }
 
+        // ==================== HELPER METHODS ====================
         public WebDriver getDriver() {
                 return driver.get();
         }
 
-        /**
-         * Data Provider for valid login credentials
-         */
+        // ==================== DATA PROVIDERS ====================
         @DataProvider(name = "validCredentials")
         public Object[][] getValidCredentials() {
                 return new Object[][] {
@@ -78,139 +79,51 @@ public class LoginTest {
                 };
         }
 
-        /**
-         * Data Provider for invalid login credentials
-         */
         @DataProvider(name = "invalidCredentials")
         public Object[][] getInvalidCredentials() {
                 return new Object[][] {
+                                // Invalid Username
                                 { "invalid_user", "secret_sauce",
                                                 "Epic sadface: Username and password do not match any user in this service" },
+                                // Invalid Password
                                 { "standard_user", "wrong_password",
                                                 "Epic sadface: Username and password do not match any user in this service" },
+                                // Empty Fields
                                 { "", "", "Epic sadface: Username is required" },
                                 { "standard_user", "", "Epic sadface: Password is required" },
-                                { "", "secret_sauce", "Epic sadface: Username is required" }
-                };
-        }
-
-        /**
-         * Data Provider for locked out user
-         */
-        @DataProvider(name = "lockedOutUser")
-        public Object[][] getLockedOutUser() {
-                return new Object[][] {
+                                { "", "secret_sauce", "Epic sadface: Username is required" },
+                                // Locked Out User
                                 { dotenv.get("LOCKED_OUT_USER"), dotenv.get("PASSWORD"),
                                                 "Epic sadface: Sorry, this user has been locked out." }
                 };
         }
 
-        // ==================== POSITIVE TEST CASES ====================
-
-        @Test(priority = 10, groups = { "positive", "smoke" }, description = "Verify login with standard user")
+        // ==================== TEST CASES ====================
+        @Test(priority = 10, groups = { "positive",
+                        "smoke" }, dataProvider = "validCredentials", description = "Verify successful login with valid credentials")
         @Story("Valid Login")
-        @Description("Verify that a standard user can log in successfully and is redirected to the inventory page.")
+        @Description("Verify that users with valid credentials can log in successfully and are redirected to the inventory page.")
         @Severity(SeverityLevel.CRITICAL)
-        public void testLoginWithStandardUser() {
-                loginPage.get().login(dotenv.get("STANDARD_USER"), dotenv.get("PASSWORD"));
+        public void testLoginSuccess(String username, String password) {
+                loginPage.get().login(username, password);
 
                 Assert.assertTrue(loginPage.get().isLoginSuccessful(),
-                                "Login should be successful with valid credentials");
+                                "Login should be successful for user: " + username);
                 Assert.assertTrue(loginPage.get().getCurrentUrl().contains("inventory.html"),
                                 "Should be redirected to inventory page");
         }
 
         @Test(priority = 20, groups = {
-                        "positive" }, dataProvider = "validCredentials", description = "Verify login with multiple valid users")
-        public void testLoginWithValidUsers(String username, String password) {
-                loginPage.get().login(username, password);
-
-                Assert.assertTrue(loginPage.get().isLoginSuccessful(),
-                                "Login should be successful for user: " + username);
-        }
-
-        // ==================== NEGATIVE TEST CASES ====================
-
-        @Test(priority = 30, groups = {
                         "negative" }, dataProvider = "invalidCredentials", description = "Verify login fails with invalid credentials")
         @Story("Invalid Login")
-        @Description("Verify that login fails with appropriate error messages when varying invalid credentials are provided.")
+        @Description("Verify that login fails with appropriate error messages when invalid credentials are provided.")
         @Severity(SeverityLevel.NORMAL)
-        public void testLoginWithInvalidCredentials(String username, String password, String expectedError) {
+        public void testLoginFailure(String username, String password, String expectedError) {
                 loginPage.get().login(username, password);
 
-                Assert.assertTrue(loginPage.get().isErrorMessageDisplayed(),
-                                "Error message should be displayed for invalid credentials");
+                Assert.assertTrue(loginPage.get().isErrorMessageDisplayed(), "Error message should be displayed");
                 Assert.assertTrue(loginPage.get().getErrorMessage().contains(expectedError),
                                 "Expected error message: " + expectedError);
-                Assert.assertFalse(loginPage.get().isLoginSuccessful(),
-                                "Login should not be successful with invalid credentials");
-        }
-
-        @Test(priority = 40, groups = {
-                        "negative" }, dataProvider = "lockedOutUser", description = "Verify locked out user cannot login")
-        public void testLoginWithLockedOutUser(String username, String password, String expectedError) {
-                loginPage.get().login(username, password);
-
-                Assert.assertTrue(loginPage.get().isErrorMessageDisplayed(),
-                                "Error message should be displayed for locked out user");
-                Assert.assertTrue(loginPage.get().getErrorMessage().contains(expectedError),
-                                "Expected error message: " + expectedError);
-                Assert.assertFalse(loginPage.get().isLoginSuccessful(),
-                                "Locked out user should not be able to login");
-        }
-
-        @Test(priority = 50, groups = { "negative" }, description = "Verify login with empty username")
-        public void testLoginWithEmptyUsername() {
-                loginPage.get().enterUsername("");
-                loginPage.get().enterPassword("secret_sauce");
-                loginPage.get().clickLoginButton();
-
-                Assert.assertTrue(loginPage.get().isErrorMessageDisplayed(),
-                                "Error message should be displayed when username is empty");
-                Assert.assertTrue(loginPage.get().getErrorMessage().contains("Username is required"),
-                                "Should show username required error");
-        }
-
-        @Test(priority = 60, groups = { "negative" }, description = "Verify login with empty password")
-        public void testLoginWithEmptyPassword() {
-                loginPage.get().enterUsername("standard_user");
-                loginPage.get().enterPassword("");
-                loginPage.get().clickLoginButton();
-
-                Assert.assertTrue(loginPage.get().isErrorMessageDisplayed(),
-                                "Error message should be displayed when password is empty");
-                Assert.assertTrue(loginPage.get().getErrorMessage().contains("Password is required"),
-                                "Should show password required error");
-        }
-
-        @Test(priority = 70, groups = { "negative" }, description = "Verify login with both fields empty")
-        public void testLoginWithEmptyFields() {
-                loginPage.get().clickLoginButton();
-
-                Assert.assertTrue(loginPage.get().isErrorMessageDisplayed(),
-                                "Error message should be displayed when both fields are empty");
-                Assert.assertTrue(loginPage.get().getErrorMessage().contains("Username is required"),
-                                "Should show username required error");
-        }
-
-        @Test(priority = 80, groups = { "negative" }, description = "Verify login with invalid username")
-        public void testLoginWithInvalidUsername() {
-                loginPage.get().login("invalid_user_123", "secret_sauce");
-
-                Assert.assertTrue(loginPage.get().isErrorMessageDisplayed(),
-                                "Error message should be displayed for invalid username");
-                Assert.assertTrue(loginPage.get().getErrorMessage().contains("Username and password do not match"),
-                                "Should show credentials mismatch error");
-        }
-
-        @Test(priority = 90, groups = { "negative" }, description = "Verify login with invalid password")
-        public void testLoginWithInvalidPassword() {
-                loginPage.get().login("standard_user", "wrong_password_123");
-
-                Assert.assertTrue(loginPage.get().isErrorMessageDisplayed(),
-                                "Error message should be displayed for invalid password");
-                Assert.assertTrue(loginPage.get().getErrorMessage().contains("Username and password do not match"),
-                                "Should show credentials mismatch error");
+                Assert.assertFalse(loginPage.get().isLoginSuccessful(), "Login should not be successful");
         }
 }
