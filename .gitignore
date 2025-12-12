@@ -4,3 +4,4 @@
 /.allure
 /allure-results
 /logs
+/logs/app.log

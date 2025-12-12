@@ -2,16 +2,16 @@ package org.chinmay.tests;
 
 import org.chinmay.pages.LoginPage;
 import io.github.cdimascio.dotenv.Dotenv;
-import io.github.bonigarcia.wdm.WebDriverManager;
+
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 import org.testng.Assert;
 import org.testng.annotations.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import java.lang.reflect.Method;
 import io.qameta.allure.*;
+
+import org.chinmay.utils.DriverFactory;
 
 /**
  * Test class for Swag Labs Login functionality
@@ -30,23 +30,9 @@ public class LoginTest {
         @BeforeMethod
         public void setUp(Method method) {
                 logger.info("Starting test: " + method.getName());
-                // Setup WebDriver using WebDriverManager with specific browser version
-                WebDriverManager.chromedriver().browserVersion("142").setup();
 
-                // Configure Chrome options
-                ChromeOptions options = new ChromeOptions();
-                options.setBinary("/usr/sbin/chromium"); // Explicitly set Chromium binary path
-                options.addArguments("--headless");
-                options.addArguments("--no-sandbox");
-                options.addArguments("--disable-dev-shm-usage");
-                options.addArguments("--start-maximized");
-                options.addArguments("--disable-notifications");
-                options.addArguments("--disable-gpu");
-                options.addArguments("--window-size=1920,1080");
-                options.addArguments("--remote-allow-origins=*");
-
-                // Initialize WebDriver
-                driver.set(new ChromeDriver(options));
+                // Initialize WebDriver using Factory
+                driver.set(DriverFactory.createDriver());
 
                 // Initialize Page Object
                 loginPage.set(new LoginPage(driver.get()));
