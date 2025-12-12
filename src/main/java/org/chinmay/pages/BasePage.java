@@ -53,7 +53,7 @@ public class BasePage {
                 }
             }
         } catch (Exception e) {
-            // Ignore reflection errors
+            logger.debug("Error getting element name via reflection", e);
         }
         return "element";
     }
