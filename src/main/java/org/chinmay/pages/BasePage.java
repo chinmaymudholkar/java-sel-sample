@@ -4,6 +4,9 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import io.qameta.allure.Step;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.time.Duration;
 
@@ -13,6 +16,7 @@ import java.time.Duration;
 public class BasePage {
     protected WebDriver driver;
     protected WebDriverWait wait;
+    protected Logger logger = LogManager.getLogger(this.getClass());
 
     public BasePage(WebDriver driver) {
         this.driver = driver;
@@ -36,17 +40,33 @@ public class BasePage {
     /**
      * Click on element
      */
+    @Step("Click on element: {0}")
     protected void click(WebElement element) {
         waitForElementToBeClickable(element);
+        try {
+            String text = element.getText();
+            // If text is empty, try to get value or just log "element"
+            if (text.isEmpty()) {
+                text = element.getAttribute("value");
+            }
+            if (text == null || text.isEmpty()) {
+                text = "element";
+            }
+            logger.info("Clicking on: " + text);
+        } catch (Exception e) {
+            logger.info("Clicking on element");
+        }
         element.click();
     }
 
     /**
      * Type text into element
      */
+    @Step("Type '{1}' into element: {0}")
     protected void type(WebElement element, String text) {
-        waitForElementToBeVisible(element);
+        waitForElementToBeClickable(element);
         element.clear();
+        logger.info("Typing: '" + text + "' into element");
         element.sendKeys(text);
     }
 

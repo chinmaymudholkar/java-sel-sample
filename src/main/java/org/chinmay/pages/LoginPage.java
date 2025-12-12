@@ -4,6 +4,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import io.qameta.allure.Step;
 
 /**
  * Page Object Model for Swag Labs Login Page
@@ -43,7 +44,9 @@ public class LoginPage extends BasePage {
     /**
      * Navigate to login page
      */
+    @Step("Navigate to Login Page")
     public void navigateToLoginPage() {
+        logger.info("Navigating to login page: " + PAGE_URL);
         driver.get(PAGE_URL);
     }
 
@@ -71,7 +74,9 @@ public class LoginPage extends BasePage {
     /**
      * Perform login with username and password
      */
+    @Step("Login with username: {0} and password: {1}")
     public void login(String username, String password) {
+        logger.info("Attempting login with username: " + username);
         enterUsername(username);
         enterPassword(password);
         clickLoginButton();

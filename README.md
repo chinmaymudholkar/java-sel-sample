@@ -8,8 +8,29 @@ This project demonstrates automated testing of the [Swag Labs](https://www.sauce
 - Positive test scenarios (valid login attempts)
 - Negative test scenarios (invalid credentials, empty fields, locked users)
 - Page Factory design pattern for maintainable test code
-- TestNG framework for test organization and execution
+- TestNG framework for test organization and execution including parallel execution
 - WebDriverManager for automatic browser driver management
+
+### Reporting
+
+This project uses **Allure Reporting** for comprehensive test execution reports.
+
+### Generating Reports
+To generate and view the Allure report:
+```bash
+mvn allure:serve
+```
+
+This will run the tests (if not already run) and open the report in your default browser.
+
+To generate the report files without opening:
+```bash
+mvn allure:report
+```
+The report will be generated in `target/site/allure-maven-plugin`.
+
+### Screenshots on Failure
+The project is configured to automatically capture screenshots when a test step fails. These screenshots are attached to the corresponding test case in the Allure report.
 
 ### Configuration
 
@@ -34,30 +55,7 @@ PASSWORD=secret_sauce
 1. Java JDK 21
 2. Maven 3.11+
 3. Chrome Browser
-- **Git**: For cloning the repository
-
-## Project Structure
-
-```
-java-sel-sample/
-├── pom.xml                          # Maven configuration
-├── testng.xml                       # TestNG suite configuration
-├── README.md                        # Project documentation
-└── src/
-    ├── main/
-    │   └── java/
-    │       └── org/
-    │           └── chinmay/
-    │               └── pages/
-    │                   ├── BasePage.java      # Base page with common methods
-    │                   └── LoginPage.java     # Login page object
-    └── test/
-        └── java/
-            └── org/
-                └── chinmay/
-                    └── tests/
-                        └── LoginTest.java     # Login test cases
-```
+4. Git: For cloning the repository
 
 ## Setup Instructions
 
@@ -83,6 +81,7 @@ This will download all required dependencies including Selenium, TestNG, and Web
 ```bash
 mvn clean test
 ```
+This will run all tests in the project, 5 at a time in parallel (configured in testng.xml).
 
 ### Run Specific Test Groups
 
@@ -90,16 +89,7 @@ mvn clean test
 ```bash
 mvn clean test -Dgroups=positive
 ```
-
-**Run only negative tests:**
-```bash
-mvn clean test -Dgroups=negative
-```
-
-**Run smoke tests:**
-```bash
-mvn clean test -Dgroups=smoke
-```
+This will run only positive tests in the project, 5 at a time in parallel (configured in testng.xml).
 
 ### Run Specific Test Suite from testng.xml
 
@@ -107,7 +97,7 @@ mvn clean test -Dgroups=smoke
 mvn clean test -DsuiteXmlFile=testng.xml
 ```
 
-## Test Scenarios Covered
+## Test Coverage
 
 ### Positive Test Scenarios
 
@@ -138,29 +128,6 @@ The following credentials are valid for Swag Labs:
 | problem_user | secret_sauce |
 | performance_glitch_user | secret_sauce |
 
-## Page Factory Pattern
-
-This project follows the Page Factory design pattern:
-
-- **BasePage.java**: Contains common methods used across all pages (wait utilities, click, type, etc.)
-- **LoginPage.java**: Encapsulates login page elements and actions
-- **LoginTest.java**: Contains test methods that use the page objects
-
-### Benefits of Page Factory:
-- Better code organization and maintainability
-- Reduced code duplication
-- Easy to update when UI changes
-- Improved test readability
-
-## Technologies Used
-
-- **Java 21**: Programming language
-- **Maven**: Build and dependency management
-- **Selenium WebDriver 4.16.1**: Browser automation
-- **TestNG 7.8.0**: Testing framework
-- **WebDriverManager 5.6.3**: Automatic driver management
-- **Chromium 142**: Browser for test execution (headless mode)
-
 ## Quick Start
 
 After cloning the repository, you can quickly run all tests with:
@@ -168,13 +135,6 @@ After cloning the repository, you can quickly run all tests with:
 ```bash
 mvn clean test
 ```
-
-This will:
-1. Clean any previous build artifacts
-2. Compile the source code
-3. Download the correct ChromeDriver version
-4. Execute all 15 test cases in headless mode
-5. Generate test reports in `target/surefire-reports/`
 
 ## Test Reports
 

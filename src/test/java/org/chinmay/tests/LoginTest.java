@@ -8,18 +8,26 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.testng.Assert;
 import org.testng.annotations.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import java.lang.reflect.Method;
+import io.qameta.allure.*;
 
 /**
  * Test class for Swag Labs Login functionality
  */
+@Epic("Authentication")
+@Feature("Login")
 public class LoginTest {
 
         private ThreadLocal<WebDriver> driver = new ThreadLocal<>();
         private ThreadLocal<LoginPage> loginPage = new ThreadLocal<>();
         private Dotenv dotenv = Dotenv.load();
+        private static final Logger logger = LogManager.getLogger(LoginTest.class);
 
         @BeforeMethod
-        public void setUp() {
+        public void setUp(Method method) {
+                logger.info("Starting test: " + method.getName());
                 // Setup WebDriver using WebDriverManager with specific browser version
                 WebDriverManager.chromedriver().browserVersion("142").setup();
 
@@ -46,11 +54,16 @@ public class LoginTest {
         }
 
         @AfterMethod
-        public void tearDown() {
+        public void tearDown(Method method) {
+                logger.info("Finished test: " + method.getName());
                 if (driver.get() != null) {
                         driver.get().quit();
                         driver.remove();
                 }
+        }
+
+        public WebDriver getDriver() {
+                return driver.get();
         }
 
         /**
@@ -95,6 +108,9 @@ public class LoginTest {
         // ==================== POSITIVE TEST CASES ====================
 
         @Test(priority = 10, groups = { "positive", "smoke" }, description = "Verify login with standard user")
+        @Story("Valid Login")
+        @Description("Verify that a standard user can log in successfully and is redirected to the inventory page.")
+        @Severity(SeverityLevel.CRITICAL)
         public void testLoginWithStandardUser() {
                 loginPage.get().login(dotenv.get("STANDARD_USER"), dotenv.get("PASSWORD"));
 
@@ -117,6 +133,9 @@ public class LoginTest {
 
         @Test(priority = 30, groups = {
                         "negative" }, dataProvider = "invalidCredentials", description = "Verify login fails with invalid credentials")
+        @Story("Invalid Login")
+        @Description("Verify that login fails with appropriate error messages when varying invalid credentials are provided.")
+        @Severity(SeverityLevel.NORMAL)
         public void testLoginWithInvalidCredentials(String username, String password, String expectedError) {
                 loginPage.get().login(username, password);
 

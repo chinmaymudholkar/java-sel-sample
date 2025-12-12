@@ -1,3 +1,5 @@
 /.vscode
 /target
 .env
+/.allure
+/allure-results
