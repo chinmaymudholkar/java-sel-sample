@@ -15,7 +15,7 @@ This project demonstrates automated testing of the [Swag Labs](https://www.sauce
 
 1. Java JDK 21
 2. Maven 3.11+
-3. Chrome Browser
+3. Firefox Browser
 4. Git: For cloning the repository
 
 ## Setup Instructions
@@ -47,6 +47,7 @@ This will run all tests in the project, 5 at a time in parallel (configured in t
 ### Run Specific Test Groups
 
 **Run only positive tests:**
+
 ```bash
 mvn clean test -Dgroups=positive
 ```
@@ -87,6 +88,7 @@ mvn allure:serve
 This will run the tests (if not already run) and open the report in your default browser.
 
 To generate the report files without opening:
+
 ```bash
 mvn allure:report
 ```
@@ -152,15 +154,6 @@ After cloning the repository, you can quickly run all tests with:
 ```bash
 mvn clean test
 ```
-
-## Test Reports
-
-After running tests, TestNG generates HTML reports in:
-```
-target/surefire-reports/index.html
-```
-
-Open this file in a browser to view detailed test execution results.
 
 ## Author
 
