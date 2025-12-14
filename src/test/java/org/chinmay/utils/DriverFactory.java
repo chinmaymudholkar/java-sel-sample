@@ -1,29 +1,60 @@
 package org.chinmay.utils;
 
-import io.github.bonigarcia.wdm.WebDriverManager;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.edge.EdgeOptions;
+import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.edge.EdgeDriver;
 
 public class DriverFactory {
 
+    private static final String[] CHROMIUM_ARGS = {
+            "--headless", "--no-sandbox", "--disable-dev-shm-usage",
+            "--remote-allow-origins=*", "--window-size=1920,1080"
+    };
+
+    private static final String[] FIREFOX_ARGS = {
+            "--headless", "--window-size=1920,1080"
+    };
+
     public static WebDriver createDriver() {
-        // Setup WebDriver using WebDriverManager with specific browser version
-        WebDriverManager.chromedriver().browserVersion("142").setup();
+        String browser = System.getProperty("browser", "firefox").toLowerCase();
 
-        // Configure Chrome options
+        switch (browser) {
+            case "chrome":
+                WebDriver chromeDriver = new ChromeDriver(_getChromeOptions());
+                return chromeDriver;
+
+            case "firefox":
+                WebDriver firefoxDriver = new FirefoxDriver(_getFirefoxOptions());
+                return firefoxDriver;
+
+            case "edge":
+                WebDriver edgeDriver = new EdgeDriver(_getEdgeOptions());
+                return edgeDriver;
+
+            default:
+                throw new IllegalArgumentException("Browser not supported: " + browser);
+        }
+    }
+
+    private static FirefoxOptions _getFirefoxOptions() {
+        FirefoxOptions options = new FirefoxOptions();
+        options.addArguments(FIREFOX_ARGS);
+        return options;
+    }
+
+    private static EdgeOptions _getEdgeOptions() {
+        EdgeOptions options = new EdgeOptions();
+        options.addArguments(CHROMIUM_ARGS);
+        return options;
+    }
+
+    private static ChromeOptions _getChromeOptions() {
         ChromeOptions options = new ChromeOptions();
-        options.setBinary("/usr/sbin/chromium"); // Explicitly set Chromium binary path
-        options.addArguments("--headless");
-        options.addArguments("--no-sandbox");
-        options.addArguments("--disable-dev-shm-usage");
-        options.addArguments("--start-maximized");
-        options.addArguments("--disable-notifications");
-        options.addArguments("--disable-gpu");
-        options.addArguments("--window-size=1920,1080");
-        options.addArguments("--remote-allow-origins=*");
-
-        // Initialize and return WebDriver
-        return new ChromeDriver(options);
+        options.addArguments(CHROMIUM_ARGS);
+        return options;
     }
 }

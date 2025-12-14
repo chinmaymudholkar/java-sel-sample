@@ -4,12 +4,13 @@ import org.chinmay.pages.LoginPage;
 import io.github.cdimascio.dotenv.Dotenv;
 
 import org.openqa.selenium.WebDriver;
-import org.testng.Assert;
+
 import org.testng.annotations.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import java.lang.reflect.Method;
 import io.qameta.allure.*;
+import org.assertj.core.api.Assertions;
 
 import org.chinmay.utils.DriverFactory;
 
@@ -85,6 +86,7 @@ public class LoginTest {
         }
 
         // ==================== TEST CASES ====================
+
         @Test(priority = 10, groups = { "positive",
                         "smoke" }, dataProvider = "validCredentials", description = "Verify successful login with valid credentials")
         @Story("Valid Login")
@@ -93,10 +95,12 @@ public class LoginTest {
         public void testLoginSuccess(String username, String password) {
                 loginPage.get().login(username, password);
 
-                Assert.assertTrue(loginPage.get().isLoginSuccessful(),
-                                "Login should be successful for user: " + username);
-                Assert.assertTrue(loginPage.get().getCurrentUrl().contains("inventory.html"),
-                                "Should be redirected to inventory page");
+                Assertions.assertThat(loginPage.get().isLoginSuccessful())
+                                .as("Login should be successful for user: %s", username)
+                                .isTrue();
+                Assertions.assertThat(loginPage.get().getCurrentUrl())
+                                .as("Should be redirected to inventory page")
+                                .contains("inventory.html");
         }
 
         @Test(priority = 20, groups = {
@@ -107,9 +111,14 @@ public class LoginTest {
         public void testLoginFailure(String username, String password, String expectedError) {
                 loginPage.get().login(username, password);
 
-                Assert.assertTrue(loginPage.get().isErrorMessageDisplayed(), "Error message should be displayed");
-                Assert.assertTrue(loginPage.get().getErrorMessage().contains(expectedError),
-                                "Expected error message: " + expectedError);
-                Assert.assertFalse(loginPage.get().isLoginSuccessful(), "Login should not be successful");
+                Assertions.assertThat(loginPage.get().isErrorMessageDisplayed())
+                                .as("Error message should be displayed")
+                                .isTrue();
+                Assertions.assertThat(loginPage.get().getErrorMessage())
+                                .as("Error message should match expected")
+                                .contains(expectedError);
+                Assertions.assertThat(loginPage.get().isLoginSuccessful())
+                                .as("Login should not be successful")
+                                .isFalse();
         }
 }

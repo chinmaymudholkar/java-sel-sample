@@ -9,7 +9,7 @@ This project demonstrates automated testing of the [Swag Labs](https://www.sauce
 - Negative test scenarios (invalid credentials, empty fields, locked users)
 - Page Factory design pattern for maintainable test code
 - TestNG framework for test organization and execution including parallel execution
-- WebDriverManager for automatic browser driver management
+
 
 ### Prerequisites
 
@@ -33,7 +33,7 @@ cd java-sel-sample
 mvn clean install
 ```
 
-This will download all required dependencies including Selenium, TestNG, and WebDriverManager.
+This will download all required dependencies including Selenium and TestNG.
 
 ## Running Tests
 
@@ -57,7 +57,23 @@ This will run only positive tests in the project, 5 at a time in parallel (confi
 ```bash
 mvn clean test -DsuiteXmlFile=testng.xml
 ```
+### Run Tests on Different Browsers
+The project supports cross-browser testing on **Firefox**, **Chrome**, and **Edge**.
 
+**Default (Firefox):**
+```bash
+mvn clean test
+```
+
+**Chrome:**
+```bash
+mvn clean test -Dbrowser=chrome
+```
+
+**Edge:**
+```bash
+mvn clean test -Dbrowser=edge
+```
 ### Reporting
 
 This project uses **Allure Reporting** for comprehensive test execution reports.
