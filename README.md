@@ -11,45 +11,6 @@ This project demonstrates automated testing of the [Swag Labs](https://www.sauce
 - TestNG framework for test organization and execution including parallel execution
 - WebDriverManager for automatic browser driver management
 
-### Reporting
-
-This project uses **Allure Reporting** for comprehensive test execution reports.
-
-### Generating Reports
-To generate and view the Allure report:
-```bash
-mvn allure:serve
-```
-
-This will run the tests (if not already run) and open the report in your default browser.
-
-To generate the report files without opening:
-```bash
-mvn allure:report
-```
-The report will be generated in `target/site/allure-maven-plugin`.
-
-### Screenshots on Failure
-The project is configured to automatically capture screenshots when a test step fails. These screenshots are attached to the corresponding test case in the Allure report.
-
-### Configuration
-
-Create a `.env` file in the root directory (copy from `.env.example`) and add your Swag Labs credentials:
-
-```bash
-cp .env.example .env
-```
-
-The `.env` file should contain:
-
-```properties
-STANDARD_USER=standard_user
-PROBLEM_USER=problem_user
-PERFORMANCE_GLITCH_USER=performance_glitch_user
-LOCKED_OUT_USER=locked_out_user
-PASSWORD=secret_sauce
-```
-
 ### Prerequisites
 
 1. Java JDK 21
@@ -96,6 +57,46 @@ This will run only positive tests in the project, 5 at a time in parallel (confi
 ```bash
 mvn clean test -DsuiteXmlFile=testng.xml
 ```
+
+### Reporting
+
+This project uses **Allure Reporting** for comprehensive test execution reports.
+
+### Generating Reports
+To generate and view the Allure report:
+```bash
+mvn allure:serve
+```
+
+This will run the tests (if not already run) and open the report in your default browser.
+
+To generate the report files without opening:
+```bash
+mvn allure:report
+```
+The report will be generated in `target/site/allure-maven-plugin`.
+
+### Screenshots on Failure
+The project is configured to automatically capture screenshots when a test step fails. These screenshots are attached to the corresponding test case in the Allure report.
+
+### Configuration
+
+Create a `.env` file in the root directory (copy from `.env.example`) and add your Swag Labs credentials:
+
+```bash
+cp .env.example .env
+```
+
+The `.env` file should contain:
+
+```properties
+STANDARD_USER=standard_user
+PROBLEM_USER=problem_user
+PERFORMANCE_GLITCH_USER=performance_glitch_user
+LOCKED_OUT_USER=locked_out_user
+PASSWORD=secret_sauce
+```
+
 
 ## Test Coverage
 
