@@ -30,7 +30,7 @@ public class LoginTest {
         // ==================== SETUP / TEARDOWN ====================
         @BeforeMethod
         public void setUp(Method method) {
-                logger.info("Starting test: " + method.getName());
+                logger.info("Starting test: {}", method.getName());
 
                 // Initialize WebDriver using Factory
                 driver.set(DriverFactory.createDriver());
