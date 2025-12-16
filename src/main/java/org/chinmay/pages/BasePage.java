@@ -38,9 +38,6 @@ public class BasePage {
     }
 
     /**
-     * Click on element
-     */
-    /**
      * Get element name using reflection
      */
     private String getElementName(WebElement element) {
@@ -64,9 +61,10 @@ public class BasePage {
     @Step("Click on element")
     protected void click(WebElement element) {
         String elementName = getElementName(element);
-        io.qameta.allure.Allure.getLifecycle().updateStep(step -> step.setName("Click on element: " + elementName));
+        io.qameta.allure.Allure.getLifecycle().updateStep(
+                step -> step.setName("Click on element: " + elementName));
         waitForElementToBeClickable(element);
-        logger.info("Clicking: " + elementName);
+        logger.info("Clicking: {}", elementName);
         element.click();
     }
 
@@ -80,7 +78,7 @@ public class BasePage {
                 .updateStep(step -> step.setName("Type '" + text + "' into element: " + elementName));
         waitForElementToBeClickable(element);
         element.clear();
-        logger.info("Typing: '" + text + "' into " + elementName);
+        logger.info("Typing: '{}' into {}", text, elementName);
         element.sendKeys(text);
     }
 

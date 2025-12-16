@@ -22,22 +22,18 @@ public class DriverFactory {
     public static WebDriver createDriver() {
         String browser = System.getProperty("browser", "firefox").toLowerCase();
 
-        switch (browser) {
-            case "chrome":
-                WebDriver chromeDriver = new ChromeDriver(_getChromeOptions());
-                return chromeDriver;
-
-            case "firefox":
-                WebDriver firefoxDriver = new FirefoxDriver(_getFirefoxOptions());
-                return firefoxDriver;
-
-            case "edge":
-                WebDriver edgeDriver = new EdgeDriver(_getEdgeOptions());
-                return edgeDriver;
-
-            default:
-                throw new IllegalArgumentException("Browser not supported: " + browser);
-        }
+        return switch (browser) {
+            case "chrome" -> {
+                yield (WebDriver) new ChromeDriver(_getChromeOptions());
+            }
+            case "firefox" -> {
+                yield (WebDriver) new FirefoxDriver(_getFirefoxOptions());
+            }
+            case "edge" -> {
+                yield (WebDriver) new EdgeDriver(_getEdgeOptions());
+            }
+            default -> throw new IllegalArgumentException("Browser not supported: " + browser);
+        };
     }
 
     private static FirefoxOptions _getFirefoxOptions() {

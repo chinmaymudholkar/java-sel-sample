@@ -46,7 +46,7 @@ public class LoginPage extends BasePage {
      */
     @Step("Navigate to Login Page")
     public void navigateToLoginPage() {
-        logger.info("Navigating to login page: " + PAGE_URL);
+        logger.info("Navigating to login page: {}", PAGE_URL);
         driver.get(PAGE_URL);
     }
 
@@ -76,7 +76,7 @@ public class LoginPage extends BasePage {
      */
     @Step("Login with username: {0} and password: {1}")
     public void login(String username, String password) {
-        logger.info("Attempting login with username: " + username);
+        logger.info("Attempting login with username: {}", username);
         enterUsername(username);
         enterPassword(password);
         clickLoginButton();
@@ -105,12 +105,5 @@ public class LoginPage extends BasePage {
         } catch (Exception e) {
             return false;
         }
-    }
-
-    /**
-     * Check if on login page
-     */
-    public boolean isOnLoginPage() {
-        return isDisplayed(appLogo) && isDisplayed(loginButton);
     }
 }
