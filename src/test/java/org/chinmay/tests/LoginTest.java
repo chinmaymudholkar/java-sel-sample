@@ -24,7 +24,7 @@ public class LoginTest {
         // ==================== FIELDS ====================
         private final ThreadLocal<WebDriver> driver = new ThreadLocal<>();
         private final ThreadLocal<LoginPage> loginPage = new ThreadLocal<>();
-        private final Dotenv dotenv = Dotenv.load();
+        private final Dotenv dotenv = Dotenv.configure().ignoreIfMissing().load();
         private static final Logger logger = LogManager.getLogger(LoginTest.class);
 
         // ==================== SETUP / TEARDOWN ====================
@@ -44,7 +44,7 @@ public class LoginTest {
 
         @AfterMethod
         public void tearDown(Method method) {
-            logger.info("Finished test: {}", method.getName());
+                logger.info("Finished test: {}", method.getName());
                 if (driver.get() != null) {
                         driver.get().quit();
                         driver.remove();
