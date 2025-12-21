@@ -23,6 +23,8 @@ jobs:
     
     permissions:
       contents: write
+      pages: write
+      id-token: write
 
     steps:
     - uses: actions/checkout@v4
@@ -59,3 +61,20 @@ jobs:
         path: |
           target/surefire-reports
           target/allure-results
+
+    - name: Generate Allure Report
+      if: always() && (github.event_name != 'schedule' || steps.check_monday.outputs.should_run == 'true')
+      run: mvn allure:report
+
+    - name: Deploy to GitHub Pages
+      if: always() && github.event_name == 'push' && github.ref == 'refs/heads/main'
+      uses: peaceiris/actions-gh-pages@v4
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./target/site/allure-maven-plugin
+        destination_dir: allure-report
+
+    - name: Display Report URL
+      if: always() && github.event_name == 'push' && github.ref == 'refs/heads/main'
+      run: |
+        echo "**Report URL:** https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/allure-report/" >> $GITHUB_STEP_SUMMARY
