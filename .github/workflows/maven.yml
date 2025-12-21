@@ -41,10 +41,10 @@ jobs:
     - name: Build with Maven
       if: github.event_name != 'schedule' || steps.check_monday.outputs.should_run == 'true'
       env:
-        STANDARD_USER: ${{ secrets.STANDARD_USER }}
-        PROBLEM_USER: ${{ secrets.PROBLEM_USER }}
-        PERFORMANCE_GLITCH_USER: ${{ secrets.PERFORMANCE_GLITCH_USER }}
-        LOCKED_OUT_USER: ${{ secrets.LOCKED_OUT_USER }}
+        STANDARD_USER: ${{ vars.STANDARD_USER }}
+        PROBLEM_USER: ${{ vars.PROBLEM_USER }}
+        PERFORMANCE_GLITCH_USER: ${{ vars.PERFORMANCE_GLITCH_USER }}
+        LOCKED_OUT_USER: ${{ vars.LOCKED_OUT_USER }}
         PASSWORD: ${{ secrets.PASSWORD }}
       run: mvn clean test
 
