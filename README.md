@@ -115,6 +115,10 @@ LOCKED_OUT_USER=locked_out_user
 PASSWORD=secret_sauce
 ```
 
+### GitHub Actions
+
+This project is configured to run tests on GitHub Actions on a schedule (first Monday of the month at 2:00 AM) and on push and pull requests.
+
 
 ## Test Coverage
 
