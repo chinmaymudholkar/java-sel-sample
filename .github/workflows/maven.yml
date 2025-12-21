@@ -48,6 +48,15 @@ jobs:
         PASSWORD: ${{ secrets.PASSWORD }}
       run: mvn clean test
 
+    - name: Upload Test Reports
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-reports
+        path: |
+          target/surefire-reports
+          target/allure-results
+
     # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
     - name: Update dependency graph
       if: github.event_name != 'schedule' || steps.check_monday.outputs.should_run == 'true'
