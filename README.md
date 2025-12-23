@@ -37,12 +37,19 @@ This will download all required dependencies including Selenium and TestNG.
 
 ## Running Tests
 
-### Run All Tests
+### Quick Start
+
+After cloning the repository, you can quickly run all tests with:
 
 ```bash
 mvn clean test
 ```
-This will run all tests in the project, 5 at a time in parallel (configured in testng.xml).
+
+This will run all tests in the project, 5 at a time in parallel (configured in testng.xml).  Screenshots for any failures are attached to the corresponding test case in the Allure report.
+
+### Allure reports from the last run on GitHub Pages
+
+Allure reports from the last run are available on GitHub Pages at: https://chinmaymudholkar.github.io/java-sel-sample/allure-report/
 
 ### Run Specific Test Groups
 
@@ -150,14 +157,6 @@ The following credentials are valid for Swag Labs:
 | locked_out_user | secret_sauce |
 | problem_user | secret_sauce |
 | performance_glitch_user | secret_sauce |
-
-## Quick Start
-
-After cloning the repository, you can quickly run all tests with:
-
-```bash
-mvn clean test
-```
 
 ## Author
 
