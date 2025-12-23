@@ -66,6 +66,10 @@ jobs:
       if: always() && (github.event_name != 'schedule' || steps.check_monday.outputs.should_run == 'true')
       run: mvn allure:report
 
+    - name: Create .nojekyll file
+      if: always() && github.event_name == 'push' && github.ref == 'refs/heads/main'
+      run: touch ./target/site/allure-maven-plugin/.nojekyll
+
     - name: Deploy to GitHub Pages
       if: always() && github.event_name == 'push' && github.ref == 'refs/heads/main'
       uses: peaceiris/actions-gh-pages@v4
@@ -77,4 +81,5 @@ jobs:
     - name: Display Report URL
       if: always() && github.event_name == 'push' && github.ref == 'refs/heads/main'
       run: |
-        echo "**Report URL:** https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/allure-report/" >> $GITHUB_STEP_SUMMARY
+        REPO_NAME=$(echo "${{ github.repository }}" | cut -d'/' -f2)
+        echo "**Report URL:** https://${{ github.repository_owner }}.github.io/${REPO_NAME}/allure-report/" >> $GITHUB_STEP_SUMMARY
