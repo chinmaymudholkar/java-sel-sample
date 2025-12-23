@@ -18,11 +18,10 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
     
     permissions:
-      contents: write
+      contents: read
       pages: write
       id-token: write
 
@@ -70,16 +69,41 @@ jobs:
       if: always() && github.event_name == 'push' && github.ref == 'refs/heads/main'
       run: touch ./target/site/allure-maven-plugin/.nojekyll
 
-    - name: Deploy to GitHub Pages
-      if: always() && github.event_name == 'push' && github.ref == 'refs/heads/main'
-      uses: peaceiris/actions-gh-pages@v4
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./target/site/allure-maven-plugin
-        destination_dir: allure-report
-
-    - name: Display Report URL
+    - name: Prepare GitHub Pages directory
       if: always() && github.event_name == 'push' && github.ref == 'refs/heads/main'
       run: |
-        REPO_NAME=$(echo "${{ github.repository }}" | cut -d'/' -f2)
-        echo "**Report URL:** https://${{ github.repository_owner }}.github.io/${REPO_NAME}/allure-report/" >> $GITHUB_STEP_SUMMARY
+        mkdir -p ./pages-deploy/allure-report
+        cp -r ./target/site/allure-maven-plugin/* ./pages-deploy/allure-report/
+        touch ./pages-deploy/.nojekyll
+
+    - name: Setup Pages
+      if: always() && github.event_name == 'push' && github.ref == 'refs/heads/main'
+      uses: actions/configure-pages@v5
+
+    - name: Upload GitHub Pages artifact
+      if: always() && github.event_name == 'push' && github.ref == 'refs/heads/main'
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: ./pages-deploy
+
+  deploy:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-latest
+    
+    permissions:
+      pages: write
+      id-token: write
+    
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}allure-report/
+    
+    steps:
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4
+
+    - name: Display Report URL
+      run: |
+        echo "**Report URL:** ${{ steps.deployment.outputs.page_url }}allure-report/" >> $GITHUB_STEP_SUMMARY
