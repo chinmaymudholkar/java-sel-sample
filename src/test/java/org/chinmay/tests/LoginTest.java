@@ -1,5 +1,6 @@
 package org.chinmay.tests;
 
+import org.chinmay.pages.InventoryPage;
 import org.chinmay.pages.LoginPage;
 import io.github.cdimascio.dotenv.Dotenv;
 
@@ -24,6 +25,7 @@ public class LoginTest {
         // ==================== FIELDS ====================
         private final ThreadLocal<WebDriver> driver = new ThreadLocal<>();
         private final ThreadLocal<LoginPage> loginPage = new ThreadLocal<>();
+        private final ThreadLocal<InventoryPage> inventoryPage = new ThreadLocal<>();
         private final Dotenv dotenv = Dotenv.configure().ignoreIfMissing().load();
         private static final Logger logger = LogManager.getLogger(LoginTest.class);
 
@@ -40,6 +42,9 @@ public class LoginTest {
 
                 // Navigate to login page
                 loginPage.get().navigateToLoginPage();
+
+                // Initialize Page Object
+                inventoryPage.set(new InventoryPage(driver.get()));
         }
 
         @AfterMethod
@@ -101,6 +106,8 @@ public class LoginTest {
                 Assertions.assertThat(loginPage.get().getCurrentUrl())
                                 .as("Should be redirected to inventory page")
                                 .contains("inventory.html");
+
+                inventoryPage.get().performLogout();
         }
 
         @Test(priority = 20, groups = {

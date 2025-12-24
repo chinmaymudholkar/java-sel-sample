@@ -1,5 +1,6 @@
 package org.chinmay.pages;
 
+import io.github.cdimascio.dotenv.Dotenv;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -10,9 +11,6 @@ import io.qameta.allure.Step;
  * Page Object Model for Swag Labs Login Page
  */
 public class LoginPage extends BasePage {
-
-    // Page URL
-    private static final String PAGE_URL = "https://www.saucedemo.com/";
 
     // Page Elements using @FindBy annotations
     @FindBy(id = "user-name")
@@ -33,12 +31,15 @@ public class LoginPage extends BasePage {
     @FindBy(className = "inventory_container")
     private WebElement inventoryContainer;
 
+    private final String PAGE_URL;
+
     /**
      * Constructor
      */
     public LoginPage(WebDriver driver) {
         super(driver);
         PageFactory.initElements(driver, this);
+        PAGE_URL = Dotenv.configure().ignoreIfMissing().load().get("BASE_URL");
     }
 
     /**
