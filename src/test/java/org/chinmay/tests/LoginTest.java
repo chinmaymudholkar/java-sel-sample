@@ -131,8 +131,9 @@ public class LoginTest {
 
         @Test(priority = 30)
         @Story("Failing test")
+        @Description("This test is designed to fail")
         @Severity(SeverityLevel.CRITICAL)
-        public void testExpectedToFail() {
+        public void testDesignedToFail() {
             loginPage.get().login(dotenv.get("STANDARD_USER"), dotenv.get("PASSWORD"));
             Assertions.assertThat(loginPage.get().getCurrentUrl())
                     .as("Should be redirected to inventory page")
