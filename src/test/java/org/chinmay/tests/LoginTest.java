@@ -128,4 +128,14 @@ public class LoginTest {
                                 .as("Login should not be successful")
                                 .isFalse();
         }
+
+        @Test(priority = 30)
+        @Story("Failing test")
+        @Severity(SeverityLevel.CRITICAL)
+        public void testExpectedToFail() {
+            loginPage.get().login(dotenv.get("STANDARD_USER"), dotenv.get("PASSWORD"));
+            Assertions.assertThat(loginPage.get().getCurrentUrl())
+                    .as("Should be redirected to inventory page")
+                    .contains("inventory1.html"); //Fail here
+        }
 }

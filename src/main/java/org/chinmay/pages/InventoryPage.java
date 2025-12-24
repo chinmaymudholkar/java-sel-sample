@@ -22,7 +22,7 @@ public class InventoryPage extends BasePage {
     @Step("Logging out")
     public void performLogout() {
         click(burgerMenu);
-        waitForSeconds(2);
+        waitForSeconds(1);
         click(logoutLink);
     }
 }
