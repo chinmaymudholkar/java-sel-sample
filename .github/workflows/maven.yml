@@ -45,6 +45,7 @@ jobs:
     - name: Build with Maven
       if: github.event_name != 'schedule' || steps.check_monday.outputs.should_run == 'true'
       env:
+        BASE_URL: ${{ vars.BASE_URL }}
         STANDARD_USER: ${{ vars.STANDARD_USER }}
         PROBLEM_USER: ${{ vars.PROBLEM_USER }}
         PERFORMANCE_GLITCH_USER: ${{ vars.PERFORMANCE_GLITCH_USER }}
