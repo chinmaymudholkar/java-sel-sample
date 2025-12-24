@@ -129,7 +129,7 @@ public class LoginTest {
                                 .isFalse();
         }
 
-        @Test(priority = 30)
+        @Test(priority = 30, description = "Test designed to fail")
         @Story("Failing test")
         @Description("This test is designed to fail")
         @Severity(SeverityLevel.CRITICAL)
