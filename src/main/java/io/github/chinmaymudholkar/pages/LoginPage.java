@@ -1,4 +1,4 @@
-package org.chinmay.pages;
+package io.github.chinmaymudholkar.pages;
 
 import io.github.cdimascio.dotenv.Dotenv;
 import org.openqa.selenium.WebDriver;

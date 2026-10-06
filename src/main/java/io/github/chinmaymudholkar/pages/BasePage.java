@@ -1,4 +1,4 @@
-package org.chinmay.pages;
+package io.github.chinmaymudholkar.pages;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;

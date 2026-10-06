@@ -1,4 +1,4 @@
-package org.chinmay.utils;
+package io.github.chinmaymudholkar.utils;
 
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;

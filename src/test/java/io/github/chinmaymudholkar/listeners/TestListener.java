@@ -1,4 +1,4 @@
-package org.chinmay.listeners;
+package io.github.chinmaymudholkar.listeners;
 
 import io.qameta.allure.Allure;
 import org.openqa.selenium.OutputType;
@@ -7,7 +7,7 @@ import org.openqa.selenium.WebDriver;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
 import java.io.ByteArrayInputStream;
-import org.chinmay.tests.LoginTest;
+import io.github.chinmaymudholkar.tests.LoginTest;
 
 public class TestListener implements ITestListener {
 

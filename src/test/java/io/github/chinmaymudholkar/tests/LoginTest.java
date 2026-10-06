@@ -1,7 +1,7 @@
-package org.chinmay.tests;
+package io.github.chinmaymudholkar.tests;
 
-import org.chinmay.pages.InventoryPage;
-import org.chinmay.pages.LoginPage;
+import io.github.chinmaymudholkar.pages.InventoryPage;
+import io.github.chinmaymudholkar.pages.LoginPage;
 import io.github.cdimascio.dotenv.Dotenv;
 
 import org.openqa.selenium.WebDriver;
@@ -13,7 +13,7 @@ import java.lang.reflect.Method;
 import io.qameta.allure.*;
 import org.assertj.core.api.Assertions;
 
-import org.chinmay.utils.DriverFactory;
+import io.github.chinmaymudholkar.utils.DriverFactory;
 
 /**
  * Test class for Swag Labs Login functionality

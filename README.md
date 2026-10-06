@@ -37,7 +37,26 @@ This will download all required dependencies including Selenium and TestNG.
 
 ## Running Tests
 
-### Quick Start
+### Configuration
+
+Create a `.env` file in the root directory (copy from `.env.example`) and add your Swag Labs credentials:
+
+```bash
+cp .env.example .env
+```
+
+The `.env` file should contain:
+
+```properties
+STANDARD_USER=standard_user
+PROBLEM_USER=problem_user
+PERFORMANCE_GLITCH_USER=performance_glitch_user
+LOCKED_OUT_USER=locked_out_user
+PASSWORD=secret_sauce
+BASE_URL=https://www.saucedemo.com/
+```
+
+### Run the tests
 
 After cloning the repository, you can quickly run all tests with:
 
@@ -58,6 +77,7 @@ Allure reports from the last run are available on GitHub Pages at: https://chinm
 ```bash
 mvn clean test -Dgroups=positive
 ```
+
 This will run only positive tests in the project, 5 at a time in parallel (configured in testng.xml).
 
 ### Run Specific Test Suite from testng.xml
@@ -66,28 +86,35 @@ This will run only positive tests in the project, 5 at a time in parallel (confi
 mvn clean test -DsuiteXmlFile=testng.xml
 ```
 ### Run Tests on Different Browsers
+
 The project supports cross-browser testing on **Firefox**, **Chrome**, and **Edge**.
 
 **Default (Firefox):**
+
 ```bash
 mvn clean test
 ```
 
 **Chrome:**
+
 ```bash
 mvn clean test -Dbrowser=chrome
 ```
 
 **Edge:**
+
 ```bash
 mvn clean test -Dbrowser=edge
 ```
+
 ## Reporting
 
 This project uses **Allure Reporting** for comprehensive test execution reports.
 
 ### Generating Reports
+
 To generate and view the Allure report:
+
 ```bash
 mvn allure:serve
 ```
@@ -99,33 +126,15 @@ To generate the report files without opening:
 ```bash
 mvn allure:report
 ```
+
 The report will be generated in `target/site/allure-maven-plugin`.
 
 ### Screenshots on Failure
 The project is configured to automatically capture screenshots when a test step fails. These screenshots are attached to the corresponding test case in the Allure report.
 
-### Configuration
-
-Create a `.env` file in the root directory (copy from `.env.example`) and add your Swag Labs credentials:
-
-```bash
-cp .env.example .env
-```
-
-The `.env` file should contain:
-
-```properties
-STANDARD_USER=standard_user
-PROBLEM_USER=problem_user
-PERFORMANCE_GLITCH_USER=performance_glitch_user
-LOCKED_OUT_USER=locked_out_user
-PASSWORD=secret_sauce
-```
-
 ## GitHub Actions
 
 This project is configured to run tests on GitHub Actions on a schedule (first Monday of the month at 2:00 AM) and on push and pull requests.
-
 
 ## Test Coverage
 
@@ -160,4 +169,4 @@ The following credentials are valid for Swag Labs:
 
 ## Author
 
-Created as a demonstration of Selenium WebDriver with TestNG using Page Factory pattern by Chinmay Mudholkar.  Feel free to clone and use as per your requirements.
+Created as a demonstration of Selenium WebDriver with TestNG using Page Factory pattern by Chinmay Mudholkar.  Feel free to clone and use as per your requirements, and also contribute back to this repo if you feel it will benefit others.

@@ -1,4 +1,4 @@
-package org.chinmay.pages;
+package io.github.chinmaymudholkar.pages;
 
 import io.qameta.allure.Step;
 import org.openqa.selenium.WebDriver;
